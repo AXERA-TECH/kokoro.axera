@@ -1,0 +1,16 @@
+onnx
+onnxsim
+onnxruntime
+loguru
+attr
+transformers
+num2words
+spacy
+phonemizer
+misaki[en]
+espeakng_loader
+ordered_set
+pypinyin
+cn2an
+jieba
+torch
