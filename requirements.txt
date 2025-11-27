@@ -7,7 +7,7 @@ transformers
 num2words
 spacy
 phonemizer
-misaki[en]
+misaki>=0.7.0,<0.9.0
 espeakng_loader
 ordered_set
 pypinyin
