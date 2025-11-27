@@ -1,0 +1,55 @@
+{
+    "input": "onnx/model1_bert_duration_sim.onnx",
+    "output_dir": "output_kokoro_split_1_96",
+    "output_name": "kokoro_part1_96.axmodel",
+    "model_type": "ONNX",
+    "npu_mode": "NPU3",
+    "target_hardware": "AX650",
+    
+    "onnx_opt": {
+    "disable_onnx_optimization": false,
+    "enable_onnxsim": true,
+    },
+    
+    "quant": {
+      "input_configs": [
+        {
+          "tensor_name": "input_ids",
+          "calibration_dataset": "./onnx/model1_input_ids.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "ref_s",
+          "calibration_dataset": "./onnx/model1_ref_s.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "text_mask",
+          "calibration_dataset": "./onnx/model1_text_mask.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        }
+      ],
+      "layer_configs": [
+          {
+          "start_tensor_names": ["DEFAULT"],
+          "end_tensor_names": ["DEFAULT"],
+          "data_type": "U16"
+          }
+      ],
+      "calibration_method": "MinMax",  
+      "enable_smooth_quant": true,
+      "conv_bias_data_type": "FP32",
+      "disable_auto_refine_scale": true,
+      "precision_analysis": true,
+      "precision_analysis_method": "EndToEnd",
+      "transformer_opt_level": 0
+    },
+    "compiler": {
+      "check": 0
+    }
+  }
+  
+  

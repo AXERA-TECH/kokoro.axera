@@ -1,0 +1,75 @@
+{
+    "input": "onnx/model3_decoder_sim.onnx",
+    #"input": "model/kokoro.onnx",
+    "output_dir": "output_kokoro_split_3_96_ok",
+    "output_name": "kokoro_part3_96.axmodel",
+    "model_type": "ONNX",
+    "npu_mode": "NPU3",
+    "target_hardware": "AX650",
+    
+    "onnx_opt": {
+    "disable_onnx_optimization": false,
+    "enable_onnxsim": true,
+    },
+    
+    "quant": {
+      "input_configs": [
+        {
+          "tensor_name": "asr",
+          # "tensor_name": "tokens",
+          "calibration_dataset": "./onnx/model3_asr.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "F0_pred",
+          "calibration_dataset": "./onnx/model3_F0_pred.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "N_pred",
+          "calibration_dataset": "./onnx/model3_N_pred.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "ref_s",
+          "calibration_dataset": "./onnx/model3_ref_s.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "har",
+          "calibration_dataset": "./onnx/model3_har.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        }
+      ],
+      "layer_configs": [
+          {
+          "start_tensor_names": ["DEFAULT"],
+          "end_tensor_names": ["DEFAULT"],
+          "data_type": "U16"
+          },
+          #{
+           #"op_types": ["Reshape","Resize","Slice","Sin"], #ok
+          # "op_types": ["Reshape","Resize","Slice","Sin","InstanceNormalization","Conv"],
+          # "data_type": "U16"
+          #}
+          
+      ],
+      "calibration_method": "MinMax",  #MinMax
+      "enable_smooth_quant": true,
+      "conv_bias_data_type": "FP32",
+      "disable_auto_refine_scale": true,
+      "precision_analysis": true,
+      "precision_analysis_method": "EndToEnd", #  PerLayer EndToEnd
+      "transformer_opt_level": 0
+    },
+    "compiler": {
+      "check": 0
+    }
+  }
+  
+  

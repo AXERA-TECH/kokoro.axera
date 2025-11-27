@@ -1,0 +1,69 @@
+{
+    "input": "onnx/model2_f0_n_asr_sim.onnx",
+    "output_dir": "output_kokoro_split_2_96",
+    "output_name": "kokoro_part2_96.axmodel",
+    "model_type": "ONNX",
+    "npu_mode": "NPU3",
+    "target_hardware": "AX650",
+    
+    "onnx_opt": {
+    "disable_onnx_optimization": false,
+    "enable_onnxsim": true,
+    },
+    
+    "quant": {
+      "input_configs": [
+        {
+          "tensor_name": "en",
+          # "tensor_name": "tokens",
+          "calibration_dataset": "./onnx/model2_en.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "input_ids",
+          # "tensor_name": "tokens",
+          "calibration_dataset": "./onnx/model2_input_ids.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "ref_s",
+          "calibration_dataset": "./onnx/model2_ref_s.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "text_mask",
+          "calibration_dataset": "./onnx/model2_text_mask.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        },
+        {
+          "tensor_name": "pred_aln_trg",
+          "calibration_dataset": "./onnx/model2_pred_aln_trg.zip",
+          "calibration_format": "Numpy",
+          "calibration_size": -1
+        }
+      ],
+      "layer_configs": [
+          {
+          "start_tensor_names": ["DEFAULT"],
+          "end_tensor_names": ["DEFAULT"],
+          "data_type": "U16"
+          }
+      ],
+      "calibration_method": "MinMax",  #MinMax
+      "enable_smooth_quant": true,
+      "conv_bias_data_type": "FP32",
+      "disable_auto_refine_scale": true,
+      "precision_analysis": true,
+      "precision_analysis_method": "EndToEnd", #  PerLayer EndToEnd
+      "transformer_opt_level": 0
+    },
+    "compiler": {
+      "check": 0
+    }
+  }
+  
+  
