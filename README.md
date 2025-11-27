@@ -9,6 +9,9 @@
 conda create -n kokoro_export python=3.10
 conda activate kokoro_export
 
+模型下载放到checkpoints/文件夹下
+[kokoro-v1.0.pth](https://github.com/AXERA-TECH/kokoro.axera/releases/download/v1.0.0/kokoro-v1_0.pth)
+
 安装依赖库
 pip install -r requirements.txt
 ```
