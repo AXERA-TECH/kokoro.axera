@@ -49,5 +49,7 @@ python export.py --use_real_sample --text "The sky above the port was the color 
 
 ## 模型转换（onnx->axera）
 ```
-pulsar2 build --config kokoro.json
+model1,model2，model3 3个模型需要进行转换
+以modle1为例：
+pulsar2 build --config config/kokoro_1.json
 ```
