@@ -102,7 +102,7 @@ if __name__ == "__main__":
     if args.use_real_sample:
         input_ids, ref_s, speed = load_sample(kmodel, args.lang_code, args.text, args.voice)
     else:
-        input_ids = torch.randint(1, 10, (args.input_length,)).numpy()
+        input_ids = torch.randint(1, 10, (args.input_length-2,)).numpy()
         input_ids = torch.LongTensor([[0, *input_ids, 0]])
         ref_s = torch.randn(1, 256)
     

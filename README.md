@@ -33,13 +33,12 @@ pip install -r requirements.txt
 1. 模型配置和权重文件（默认在 checkpoints/ 目录下）。
 2. 运行脚本导出 ONNX 子模型：
 
-指定
+
 ```bash
-python export.py -o onnx -l a --input_length 96 --voice checkpoints/voices/af_heart.pt
+python export.py --use_real_sampl -l z -o onnx --voice checkpoints/voices/zf_xiaoyi.pt
 ```
 
-如需使用真实样本：
-
+或者指定text
 ```bash
 python export.py --use_real_sample --text "The sky above the port was the color of television, tuned to a dead channel." -l a -o onnx --voice checkpoints/voices/af_heart.pt
 ```

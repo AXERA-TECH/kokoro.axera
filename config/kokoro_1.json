@@ -25,6 +25,12 @@
           "calibration_format": "Numpy",
           "calibration_size": -1
         },
+        //  {
+        //   "tensor_name": "input_lengths",
+        //   "calibration_dataset": "./onnx/model1_input_lengths.zip",
+        //   "calibration_format": "Numpy",
+        //   "calibration_size": -1
+        // },
         {
           "tensor_name": "text_mask",
           "calibration_dataset": "./onnx/model1_text_mask.zip",
