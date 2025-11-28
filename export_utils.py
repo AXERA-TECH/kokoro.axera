@@ -112,7 +112,7 @@ def export_model1(model, output_dir, input_ids=None, ref_s=None):
     export_onnx(
         model,
         args=(input_ids, ref_s, input_lengths, text_mask),
-        input_names=['input_ids', 'ref_s', 'text_mask'],
+        input_names=['input_ids', 'ref_s','input_lengths', 'text_mask'],
         output_names=['duration', 'd'],
         onnx_file=onnx_file
     )
@@ -132,7 +132,7 @@ def export_model2(model, output_dir, example_inputs):
     export_onnx(
         model,
         args=example_inputs,
-        input_names=['en', 'ref_s', 'input_ids', 'text_mask', 'pred_aln_trg'],
+        input_names=['en', 'ref_s', 'input_ids', 'input_lengths','text_mask', 'pred_aln_trg'],
         output_names=['F0_pred', 'N_pred', 'asr'],
         onnx_file=onnx_file
     )
