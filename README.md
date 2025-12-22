@@ -1,3 +1,10 @@
+# kokoro.axera
+
+# C++编译
+
+参考[cpp](cpp/README.md)
+
+
 # export.py 使用说明  
 
 将 Kokoro 语音合成模型分割导出为多个ONNX子模型。

@@ -15,8 +15,11 @@ sudo apt install build-essential cmake
 
 编译  
 ```
+cd cpp
 ./download_bsp.sh
 ./build.sh
 ```
 
 编译完成的bin在install目录下
+
+其中kokoro是命令行demo，kokoro_srv是服务端
