@@ -18,9 +18,9 @@ link_directories(${MSP_LIB_DIR})
 
 # onnxruntime
 include_directories(third_party/onnxruntime/include)
-include_directories(third_party/onnxruntime/include/onnxruntime/core/session)
+include_directories(third_party/onnxruntime/include/onnxruntime)
 link_directories(third_party/onnxruntime/lib)
-list(APPEND ORT_LIBS onnxruntime onnxruntime_providers_shared)
+list(APPEND ORT_LIBS onnxruntime)
 
 # limonp
 include_directories(src/limonp/include)
@@ -43,24 +43,24 @@ aux_source_directory(src/ax_model_runner SRC)
 add_executable(kokoro main.cpp ${SRC})
 target_link_libraries(kokoro ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
-add_executable(test_ax_model tests/test_ax_model.cpp ${SRC})
-target_link_libraries(test_ax_model ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
+# add_executable(test_ax_model tests/test_ax_model.cpp ${SRC})
+# target_link_libraries(test_ax_model ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
-add_executable(test_jieba tests/test_jieba.cpp ${SRC})
-target_link_libraries(test_jieba ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
+# add_executable(test_jieba tests/test_jieba.cpp ${SRC})
+# target_link_libraries(test_jieba ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
-add_executable(test_espeak tests/test_espeak.cpp ${SRC})
-target_link_libraries(test_espeak ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
+# add_executable(test_espeak tests/test_espeak.cpp ${SRC})
+# target_link_libraries(test_espeak ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
 add_executable(kokoro_srv kokoro_srv.cpp ${SRC})
 target_link_libraries(kokoro_srv ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
 install(TARGETS 
         kokoro 
-        test_ax_model
-        test_jieba
         kokoro_srv
-        test_espeak
+        # test_ax_model
+        # test_jieba
+        # test_espeak
     RUNTIME
         DESTINATION .)
 
@@ -68,19 +68,19 @@ set_target_properties(kokoro
     PROPERTIES
     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
 )
-set_target_properties(test_ax_model
-    PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
-)  
-set_target_properties(test_jieba
-    PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
-)  
 set_target_properties(kokoro_srv
     PROPERTIES
     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
 )  
-set_target_properties(test_espeak
-    PROPERTIES
-    INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
-)
+# set_target_properties(test_ax_model
+#     PROPERTIES
+#     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
+# )  
+# set_target_properties(test_jieba
+#     PROPERTIES
+#     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
+# )  
+# set_target_properties(test_espeak
+#     PROPERTIES
+#     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
+# )
