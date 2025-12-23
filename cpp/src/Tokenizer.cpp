@@ -29,7 +29,8 @@ Tokenizer::Tokenizer(const std::string& lang_code, const TokenizerConfig& config
             );
             g2p_ = std::make_unique<ZHG2P>(processor_, "1.1", "<unk>", cmu_dict);
         } else {
-            espeak_Initialize(AUDIO_OUTPUT_SYNCHRONOUS, 0, nullptr, 0);
+            const char* data_path = "./third_party/espeak-ng/share/espeak-ng-data";
+            espeak_Initialize(AUDIO_OUTPUT_RETRIEVAL, 0, data_path, 0);
 
             espeak_VOICE voice;
             memset(&voice, 0, sizeof(voice));
@@ -40,12 +41,16 @@ Tokenizer::Tokenizer(const std::string& lang_code, const TokenizerConfig& config
                     ALOGI("Load language: English");
                     voice.name = "English_(America)";
                     voice.languages = "en-us";
+                    voice.gender = 2;           // 女性（1=男，2=女），设为0则不指定
                     break;
                 }
                 case 'j': {
                     ALOGI("Load language: Japanese");
-                    voice.name = "Japanese";
                     voice.languages = "ja";
+                    voice.gender = 2;           // 女性（1=男，2=女），设为0则不指定
+                    voice.age = 0;              // 年龄，0表示不指定
+                    voice.variant = 0;          // 变体
+                    voice.name = NULL;          // 让系统自动选择匹配的语音
                     break;
                 }
                 default: {
@@ -56,7 +61,6 @@ Tokenizer::Tokenizer(const std::string& lang_code, const TokenizerConfig& config
                 }
             }
             
-            voice.gender = 2;
             espeak_SetVoiceByProperties(&voice);
         }
         
