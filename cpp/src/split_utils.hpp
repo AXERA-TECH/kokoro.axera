@@ -320,10 +320,55 @@ std::vector<std::string> split_sentence(const std::string& text, const std::stri
     }
 
     // 第一步：如果是中文/日文，在字之间插入空格
-    std::string processed_text = text;
+    std::string processed = text;
+    //暂时不插入空格
     if (lang_code == "z" || lang_code == "j") {
-        processed_text = insert_spaces_between_chinese_chars(text);
-        // std::cout << "处理后的文本: " << processed_text << std::endl;
+        //processed = insert_spaces_between_chinese_chars(text);
+        // std::cout << "处理后的文本: " << processed << std::endl;
+        //参考上面的函数实现，替换英文标点为中文标点
+        processed = replace_all(processed, ".", "。");
+        processed = replace_all(processed, "!", "！");
+        processed = replace_all(processed, "?", "？");
+        processed = replace_all(processed, ";", "；");
+        processed = replace_all(processed, ",", "，");
+        processed = replace_all(processed, "\"", "，");
+        processed = replace_all(processed, "'", "，");
+        processed = replace_all(processed, "(", "（");
+        processed = replace_all(processed, ")", "）");
+        processed = replace_all(processed, "[", "【");
+        processed = replace_all(processed, "]", "】");
+        processed = replace_all(processed, "<", "《");
+        processed = replace_all(processed, ">", "》");
+        processed = replace_all(processed, "…", "。");
+    }
+    else {
+        // 替换中文标点为英文标点
+        processed = replace_all(processed, "。", ".");
+        processed = replace_all(processed, "！", ".");
+        processed = replace_all(processed, "？", ".");
+        processed = replace_all(processed, "；", ".");
+        processed = replace_all(processed, "，", ",");
+        processed = replace_all(processed, "“", "'");
+        processed = replace_all(processed, "”", "'");
+        processed = replace_all(processed, "‘", "'");
+        processed = replace_all(processed, "’", "'");
+        processed = replace_all(processed, "（", "(");
+        processed = replace_all(processed, "）", ")");
+        processed = replace_all(processed, "【", "[");
+        processed = replace_all(processed, "】", "]");
+        processed = replace_all(processed, "《", "<");
+        processed = replace_all(processed, "》", ">");
+        processed = replace_all(processed, "…", ".");
+        processed = replace_all(processed, ":", ".");
+        //processed = replace_all(processed, "\"", ".");
+        processed = replace_all(processed, "...", ".");
+        processed = replace_all(processed, "\n", ".");
+
+        // 移除特定字符
+        string chars_to_remove = "<>()[]«»";
+        for (char c : chars_to_remove) {
+            processed.erase(remove(processed.begin(), processed.end(), c), processed.end());
+        }
     }
     
     try {
@@ -333,7 +378,7 @@ std::vector<std::string> split_sentence(const std::string& text, const std::stri
         
         // 将UTF-8字符串转换为宽字符字符串（支持中文）
         std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-        wtext = converter.from_bytes(processed_text);
+        wtext = converter.from_bytes(processed);
         
         if (lang_code == "z" || lang_code == "j") {
             // 中文/日文标点：使用宽字符正则
@@ -363,7 +408,7 @@ std::vector<std::string> split_sentence(const std::string& text, const std::stri
             } else {
                 wsentence = wsentences[i];
             }
-            
+            // printf("wsentence: %s\n", converter.to_bytes(wsentence).c_str());
             // 去除首尾空白字符（宽字符版本）
             auto start = wsentence.find_first_not_of(L" \t\n\r\f\v");
             auto end_pos = wsentence.find_last_not_of(L" \t\n\r\f\v");
@@ -403,23 +448,29 @@ std::vector<std::string> split_sentence(const std::string& text, const std::stri
         
     } catch (const std::regex_error& e) {
         std::cerr << "正则表达式错误: " << e.what() << std::endl;
-        result.push_back(processed_text);
+        result.push_back(processed);
     } catch (const std::exception& e) {
         std::cerr << "错误: " << e.what() << std::endl;
-        result.push_back(processed_text);
+        result.push_back(processed);
     }
-    
+
+    //
+    // for (size_t i = 0; i < result.size(); i++) {
+    //     printf("句子 %zu: %s\n", i, result[i].c_str());
+    // }   
+
     // 如果没有分割出任何句子，返回原文本
     if (result.empty()) {
-        result.push_back(processed_text);
+        result.push_back(processed);
     }
 
     // 句子间添加空格
-    if (result.size() > 1) {
-        for (size_t i = 0; i < result.size() - 1; i++) {
-            result[i] += "...";
-        }
-    }
+    if (result.size() >= 1) {
+        //for (size_t i = 0; i < result.size() - 1; i++) {
+            for (size_t i = 0; i < result.size(); i++) {
+                result[i] += "...";
+            }
+    }  
 
     return result;
 }

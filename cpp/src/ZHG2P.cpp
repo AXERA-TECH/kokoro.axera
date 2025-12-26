@@ -349,8 +349,10 @@ std::pair<std::string, std::string> ZHG2P::operator()(const std::string& text) {
         std::string result;
         bool last_was_eng = false;
 
-        for (const auto& tk : tokens) {
+        for (size_t idx = 0; idx < tokens.size(); ++idx) {
+             const auto& tk = tokens[idx];
              bool is_eng = (tk.tag == "eng");
+             bool is_punct = (tk.tag == "x");
 
              // Logic to add spaces around English words
              // 1. Before English word (if not at start)
@@ -419,9 +421,19 @@ std::pair<std::string, std::string> ZHG2P::operator()(const std::string& text) {
                  if (!pinyin_acc.empty()) {
                      result += py2ipa(pinyin_acc);
                  }
+                 
+                // Add space after Chinese word (if not last token and next is not punctuation) result length <= 64 (192/3)
+                 if (idx + 1 < tokens.size() && tokens[idx + 1].tag != "x" && result.length() < 64) {
+                     result += " ";
+                 }
+
              }
              last_was_eng = is_eng;
         }
+
+        // printf("Processed with ZHFrontend: %s \n", result.c_str());
+        // printf("Result length: %zu\n", result.length());
+
         return {result, ""};
     }
     return {legacy_call(processed_text), ""};

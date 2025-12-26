@@ -46,6 +46,7 @@ Tokenizer::Tokenizer(const std::string& lang_code, const TokenizerConfig& config
                 }
                 case 'j': {
                     ALOGI("Load language: Japanese");
+                    // voice.name = "Japanese";
                     voice.languages = "ja";
                     voice.gender = 2;           // 女性（1=男，2=女），设为0则不指定
                     voice.age = 0;              // 年龄，0表示不指定
@@ -61,6 +62,7 @@ Tokenizer::Tokenizer(const std::string& lang_code, const TokenizerConfig& config
                 }
             }
             
+            // voice.gender = 2;
             espeak_SetVoiceByProperties(&voice);
         }
         
@@ -109,11 +111,55 @@ std::string Tokenizer::phonemize(const std::string& text, bool norm) {
         if (!g2p_) return text;
         auto result = (*g2p_)(text);
         return result.first; 
-    } else {
+    } 
+    // else //if (inputs_id_length <= 32) 
+    // {
+    //     const char* textPtr_ = text.c_str();
+    //     int phonememode_ = ('_' << 8) | 0x02;
+    //     const char * phonemes_ = espeak_TextToPhonemes(
+    //             reinterpret_cast<const void **>(&textPtr_), espeakCHARS_UTF8, phonememode_);
+    //     return std::string(phonemes_);
+    // }
+    else{
+        // 
+        // ALOGI("phonemize input text: [%s] (len=%zu)", text.c_str(), text.length());
+        
+        std::string full_phonemes;
         const char* textPtr = text.c_str();
+        const char* textEnd = text.c_str() + text.length();
         int phonememode = ('_' << 8) | 0x02;
-        const char * phonemes = espeak_TextToPhonemes(
-                reinterpret_cast<const void **>(&textPtr), espeakCHARS_UTF8, phonememode);
-        return std::string(phonemes);
+        
+        int iteration = 0;
+        while (textPtr && *textPtr && textPtr < textEnd) {
+            const char* beforePtr = textPtr;
+            const char* phonemes = espeak_TextToPhonemes(
+                    reinterpret_cast<const void **>(&textPtr), espeakCHARS_UTF8, phonememode);
+            
+            if (phonemes) {
+                // 添加空格分隔
+                if (iteration > 0 && !full_phonemes.empty()) {
+                    full_phonemes += "   ";
+                }
+                full_phonemes += std::string(phonemes);
+                // ALOGI("  Iteration %d: processed [%.*s] -> phonemes: [%s]", 
+                //       iteration, (int)(textPtr - beforePtr), beforePtr, phonemes);
+            }
+            
+            if (textPtr == beforePtr) {
+                ALOGW("espeak_TextToPhonemes did not advance pointer, breaking to avoid infinite loop");
+                if (*textPtr) textPtr++;
+            }
+            
+            iteration++;
+            if (iteration > 100) {
+                ALOGE("Too many iterations in phonemize, breaking");
+                break;
+            }
+        }
+        
+        // ALOGI("phonemize output phonemes: [%s] (len=%zu, %d iterations)", 
+        //       full_phonemes.c_str(), full_phonemes.length(), iteration);
+        
+        return full_phonemes;
     }
 }

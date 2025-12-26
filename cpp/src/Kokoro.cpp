@@ -675,6 +675,8 @@ bool Kokoro::inference_single_chunk(
 
     // save_file(input_ids, "input_ids.bin");
 
+    int original_actual_len = actual_len;
+
     _prepare_input_ids(input_ids, actual_len, is_doubled);
 
     // save_file(input_ids, "input_ids2.bin");
@@ -807,21 +809,15 @@ bool Kokoro::inference_single_chunk(
 
     // 转换为音频
     _postprocess_x_to_audio(x_, audio);
-    actual_content_frames = std::accumulate(pred_dur.begin(), pred_dur.begin() + actual_len, 0);
-
-    // 如果输入被复制了，截取前一半音频
-    // if is_doubled:
-    //     audio = audio[:len(audio) // 2]
-    //     actual_content_frames = actual_content_frames // 2
-    //     total_frames = total_frames // 2
+    
     if (is_doubled) {
-        int audio_len = audio.size();
+        actual_content_frames = std::accumulate(pred_dur.begin(), pred_dur.begin() + original_actual_len, 0);   
+        size_t audio_len = audio.size();
         audio.erase(audio.begin() + audio_len / 2, audio.end());
-        actual_content_frames = actual_content_frames / 2;
         total_frames = total_frames / 2;
+    } else {
+        actual_content_frames = std::accumulate(pred_dur.begin(), pred_dur.begin() + actual_len, 0);
     }
-
-    // save_file(audio, "audio.bin");
 
     return true;
 }
