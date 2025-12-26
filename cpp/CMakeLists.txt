@@ -49,8 +49,8 @@ target_link_libraries(kokoro ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 # add_executable(test_jieba tests/test_jieba.cpp ${SRC})
 # target_link_libraries(test_jieba ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
-# add_executable(test_espeak tests/test_espeak.cpp ${SRC})
-# target_link_libraries(test_espeak ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
+add_executable(test_espeak tests/test_espeak.cpp ${SRC})
+target_link_libraries(test_espeak ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
 
 add_executable(kokoro_srv kokoro_srv.cpp ${SRC})
 target_link_libraries(kokoro_srv ${MSP_LIBS} ${ORT_LIBS} ${ESPEAK_LIBS})
@@ -60,7 +60,7 @@ install(TARGETS
         kokoro_srv
         # test_ax_model
         # test_jieba
-        # test_espeak
+        test_espeak
     RUNTIME
         DESTINATION .)
 
@@ -80,7 +80,7 @@ set_target_properties(kokoro_srv
 #     PROPERTIES
 #     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
 # )  
-# set_target_properties(test_espeak
-#     PROPERTIES
-#     INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
-# )
+set_target_properties(test_espeak
+    PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../third_party/onnxruntime/lib"
+)

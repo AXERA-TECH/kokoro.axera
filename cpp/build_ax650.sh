@@ -1,3 +1,4 @@
+#!/bin/bash
 mkdir -p build && cd build
 cmake ..  \
   -DCHIP_AX650=ON  \
